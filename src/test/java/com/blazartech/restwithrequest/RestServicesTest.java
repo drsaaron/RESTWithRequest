@@ -59,6 +59,7 @@ public class RestServicesTest {
 
     /**
      * Test of getName method, of class RestServices.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetName_noGreeting() throws Exception {
@@ -72,15 +73,17 @@ public class RestServicesTest {
                 .andExpect(jsonPath("greeting").value(IsNull.nullValue()));
     }
     
+    private static final String GREETING = "hola amigos";
+    
     @Test
     public void testGetName_withGreeting() throws Exception {
         logger.info("getName_withGreeting");
 
-        ResultActions result = mockMvc.perform(get("/name").header("Greeting", "hola amigos"))
+        ResultActions result = mockMvc.perform(get("/name").header("Greeting", GREETING))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("name", is("Scott")))
                 .andExpect(jsonPath("url", is("/name")))
-                .andExpect(jsonPath("greeting", is("hola amigos")));
+                .andExpect(jsonPath("greeting", is(GREETING)));
     }
 }
