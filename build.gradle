@@ -22,6 +22,14 @@ repositories {
 
 configurations {
   runtime.exclude group: 'org.apache.logging.log4j', module: 'log4j-slf4j-impl'
+
+  // get publishing to maven local to work https://stackoverflow.com/questions/61197984/bootjar-mavenjar-artifact-wasnt-produced-by-this-build
+  [apiElements, runtimeElements].each {
+        it.outgoing.artifacts.removeIf {
+            it.buildDependencies.getDependencies(null).contains(jar)
+        }
+        it.outgoing.artifact(bootJar)
+   }
 }
 
 dependencies {
@@ -38,7 +46,7 @@ sourceCompatibility = '11'
 publishing {
     publications {
         maven(MavenPublication) {
-            from(components.java)
+            from components.java
         }
     }
 }
@@ -55,3 +63,4 @@ test {
         // excludeEngines 'junit-vintage'
     }
 }
+
